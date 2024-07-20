@@ -6,6 +6,9 @@ from scipy.signal import find_peaks
 from numpy import argmax, diff, nonzero
 
 def xor_based_corr(signal):
+    """
+    Estimate autocorrelation via XOR
+    """
     length = signal.shape[-1]
     corr = [sum([signal[j] ^ signal[(i + j) % length] for j in range(length)]) / length for i in range(length // 2)]
     return corr
@@ -14,20 +17,6 @@ def parabolic(f, x):
     """
     Quadratic interpolation for estimating the true position of an
     inter-sample maximum when nearby samples are known.
-
-    f is a vector and x is an index for that vector.
-
-    Returns (vx, vy), the coordinates of the vertex of a parabola that goes
-    through point x and its two neighbors.
-
-    Example:
-    Defining a vector f with a local maximum at index 3 (= 6), find local
-    maximum if points 2, 3, and 4 actually defined a parabola.
-
-    In [3]: f = [2, 3, 1, 6, 4, 2, 3, 1]
-
-    In [4]: parabolic(f, argmax(f))
-    Out[4]: (3.2142857142857144, 6.1607142857142856)
     """
     if int(x) != x:
         raise ValueError('x must be an integer sample index')
@@ -56,11 +45,17 @@ def freq_from_obp(sig, sr):
     return sr / px
 
 def f0_predictor(audio, sr, win_length=1024, hop_length=256):
+    """
+    Predict F0 value
+    """
     sigments = librosa.util.frame(audio, frame_length=win_length, hop_length=hop_length)
     f0 = np.array([freq_from_obp(sigments[:,i], sr) for i in range(0, sigments.shape[-1])])
     return f0
 
 def extract_sign(audio):
+    """
+    Extract SIGN from a signal
+    """
     sign = []
     for i in range(audio.shape[-1]):
         if audio[i] >= 0:

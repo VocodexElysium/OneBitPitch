@@ -71,4 +71,4 @@ def extract_sign(audio):
 
 audio, sr = librosa.load("/mnt/petrelfs/wangyuancheng/OneBitPitch/test/square_440.wav", sr=None)
 sign = extract_sign(audio)
-print(f0_predictor(sign[:10240], sr))
+print(f0_predictor(sign, sr))
